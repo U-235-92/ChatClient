@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane fx:id="rootComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aq.koptev.chat.controllers.ClientController">
+    <center>
+        <SplitPane dividerPositions="0.15217391304347827" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <BorderPane layoutX="-56.0" layoutY="72.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <top>
+                                <FlowPane prefHeight="35.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                            </top>
+                            <center>
+                                <ListView fx:id="chatUsers" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                            </center>
+                        </BorderPane>
+                    </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="495.0">
+                    <children>
+                        <BorderPane layoutX="172.0" layoutY="106.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <center>
+                                <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+                                    <items>
+                                        <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                    <children>
+                                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <top>
+                                                                <Pane prefHeight="35.0" prefWidth="502.0" BorderPane.alignment="CENTER" />
+                                                            </top>
+                                                            <center>
+                                                                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                                    <bottom>
+                                                                        <BorderPane prefHeight="27.0" prefWidth="502.0" BorderPane.alignment="CENTER">
+                                                                            <right>
+                                                                                <FlowPane prefHeight="50.0" prefWidth="70.0" BorderPane.alignment="CENTER">
+                                                                                    <children>
+                                                                                        <Button fx:id="sendButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Отправить" />
+                                                                                    </children>
+                                                                                </FlowPane>
+                                                                            </right>
+                                                                            <center>
+                                                                                <TextField fx:id="messageField" promptText="Введите текст сообщения..." BorderPane.alignment="CENTER" />
+                                                                            </center>
+                                                                        </BorderPane>
+                                                                    </bottom>
+                                                                    <center>
+                                                                        <BorderPane prefHeight="282.0" prefWidth="502.0" BorderPane.alignment="CENTER">
+                                                                            <center>
+                                                                                <ListView fx:id="chatHistory" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                                                            </center>
+                                                                        </BorderPane>
+                                                                    </center>
+                                                                </BorderPane>
+                                                            </center>
+                                                        </BorderPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </items>
+                                        </SplitPane>
+                                    </items>
+                                </SplitPane>
+                            </center>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>
