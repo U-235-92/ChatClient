@@ -1,5 +1,6 @@
 package aq.koptev.chat.controllers;
 
+import aq.koptev.chat.models.ClientNetwork;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -21,54 +22,16 @@ public class ClientController {
     private BorderPane rootComponent;
     @FXML
     private Button sendButton;
+    private ClientNetwork network;
 
     private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
 
-    public ClientController() {
-
-    }
+    public ClientController() {}
 
     @FXML
     void initialize() {
         setWrapListViewTextMessage();
         addActionListeners();
-    }
-
-    private void addActionListeners() {
-        sendButton.setOnAction((event) -> sendMessage());
-        rootComponent.setOnKeyPressed((event) -> {
-            if(event.getCode().equals(KeyCode.ENTER)) {
-                sendMessage();
-            }
-        });
-    }
-
-    private void sendMessage() {
-        if(isEmptyMessageField()) {
-            return;
-        }
-        String textMessage = textMessage();
-        String timeMessage = dateMessage();
-        String messageToSend = "[" + timeMessage + "] " + textMessage;
-        chatHistory.getItems().add(messageToSend);
-        chatHistory.scrollTo(chatHistory.getItems().size() - 1);
-        clearMessageField();
-    }
-
-    private boolean isEmptyMessageField() {
-        return messageField.getText().equals("");
-    }
-
-    private String textMessage() {
-        return messageField.getText();
-    }
-
-    private String dateMessage() {
-        return new SimpleDateFormat(FORMAT_DATE_MESSAGE).format(new Date());
-    }
-
-    private void clearMessageField() {
-        messageField.setText("");
     }
 
     private void setWrapListViewTextMessage() {
@@ -89,5 +52,54 @@ public class ClientController {
                 return cell;
             }
         });
+    }
+
+    private void addActionListeners() {
+        sendButton.setOnAction((event) -> sendMessage());
+        rootComponent.setOnKeyPressed((event) -> {
+            if(event.getCode().equals(KeyCode.ENTER)) {
+                sendMessage();
+            }
+        });
+    }
+
+    private void sendMessage() {
+        if(isEmptyMessageField()) {
+            return;
+        }
+        String textMessage = textMessage();
+        String dateMessage = dateMessage();
+        String messageToSend = formatMessageBeforeSend(dateMessage, textMessage);
+        network.sendMessage(messageToSend);
+        clearMessageField();
+    }
+
+    public synchronized void acceptMessage(String message) {
+        chatHistory.getItems().add(message);
+        chatHistory.scrollTo(chatHistory.getItems().size() - 1);
+    }
+
+    private boolean isEmptyMessageField() {
+        return messageField.getText().equals("");
+    }
+
+    private String textMessage() {
+        return messageField.getText().trim();
+    }
+
+    private String dateMessage() {
+        return new SimpleDateFormat(FORMAT_DATE_MESSAGE).format(new Date());
+    }
+
+    private String formatMessageBeforeSend(String dateMessage, String textMessage) {
+        return "[" + dateMessage + "] " + textMessage;
+    }
+
+    private void clearMessageField() {
+        messageField.setText("");
+    }
+
+    public void setNetwork(ClientNetwork network) {
+        this.network = network;
     }
 }

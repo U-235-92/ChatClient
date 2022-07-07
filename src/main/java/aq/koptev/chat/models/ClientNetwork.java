@@ -1,5 +1,7 @@
 package aq.koptev.chat.models;
 
+import aq.koptev.chat.controllers.ClientController;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,26 +18,30 @@ public class ClientNetwork {
     private BufferedReader bufferedReader;
     private OutputStreamWriter outputStreamWriter;
 
+    private ClientController controller;
+
     private String host;
     private int port;
 
-    public ClientNetwork() {
-        this(DEFAULT_HOST, DEFAULT_PORT);
+    public ClientNetwork(ClientController controller) {
+        this(DEFAULT_HOST, DEFAULT_PORT, controller);
     }
 
-    public ClientNetwork(String host, int port) {
+    public ClientNetwork(String host, int port, ClientController controller) {
         this.host = host;
         this.port = port;
-        run();
+        this.controller = controller;
+        connect();
     }
 
-    private void run() {
+    private void connect() {
         try {
             socket = new Socket(host, port);
             inputStreamReader = new InputStreamReader(socket.getInputStream());
             bufferedReader = new BufferedReader(inputStreamReader);
             outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
         } catch (IOException e) {
+            System.out.println("Ошибка соединения с сервером");
             e.printStackTrace();
         }
     }
@@ -44,11 +50,27 @@ public class ClientNetwork {
         try {
             outputStreamWriter.write(message);
         } catch (IOException e) {
+            System.out.println("Ошибка во время отправки сообщения");
             throw new RuntimeException(e);
         }
     }
 
     public void acceptMessage() {
-
+        Runnable task = () -> {
+            String message = null;
+            try {
+                while (true) {
+                    if((message = bufferedReader.readLine()) != null) {
+                        controller.acceptMessage(message);
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Ошибка во время приема сообщения");
+                e.printStackTrace();
+            }
+        };
+        Thread messageWaiter = new Thread(task);
+        messageWaiter.setDaemon(true);
+        messageWaiter.start();
     }
 }

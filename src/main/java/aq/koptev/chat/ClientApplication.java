@@ -1,6 +1,7 @@
 package aq.koptev.chat;
 
 import aq.koptev.chat.controllers.ClientController;
+import aq.koptev.chat.models.ClientNetwork;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +19,9 @@ public class ClientApplication extends Application {
         stage.show();
 
         ClientController controller = fxmlLoader.getController();
+        ClientNetwork network = new ClientNetwork(controller);
+        controller.setNetwork(network);
+        network.acceptMessage();
     }
 
     public static void main(String[] args) {
