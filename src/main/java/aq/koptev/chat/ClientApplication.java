@@ -23,11 +23,6 @@ public class ClientApplication extends Application {
         stage.setTitle("Chat");
         stage.setScene(scene);
         stage.show();
-
-//        Connectable network = new ClientNetwork();
-//        Controllable controller = fxmlLoader.getController();
-//        controller.setNetwork(network);
-//        network.acceptMessage(controller);
     }
 
     public static void main(String[] args) {

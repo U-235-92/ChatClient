@@ -27,8 +27,8 @@ public class ClientNetwork extends Network {
             outputStream = new DataOutputStream(socket.getOutputStream());
             inputStream = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
-            System.out.println("Ошибка соединения с сервером");
-            e.printStackTrace();
+            System.out.println("Ошибка подключения к серверу (сервер отключен)");
+            System.exit(0);
         }
     }
 
