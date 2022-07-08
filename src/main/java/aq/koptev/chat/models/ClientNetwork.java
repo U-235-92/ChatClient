@@ -1,19 +1,16 @@
 package aq.koptev.chat.models;
 
 import aq.koptev.chat.controllers.Controllable;
+import javafx.application.Platform;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientNetwork extends Network {
 
     private Socket socket;
-    private InputStreamReader inputStream;
-    private BufferedReader bufferedReader;
-    private OutputStreamWriter outputStream;
+    private DataInputStream inputStream;
+    private DataOutputStream outputStream;
 
     public ClientNetwork() {
         super();
@@ -27,9 +24,8 @@ public class ClientNetwork extends Network {
     protected void connect() {
         try {
             socket = new Socket(getHost(), getPort());
-            inputStream = new InputStreamReader(socket.getInputStream());
-            bufferedReader = new BufferedReader(inputStream);
-            outputStream = new OutputStreamWriter(socket.getOutputStream());
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            inputStream = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
             System.out.println("Ошибка соединения с сервером");
             e.printStackTrace();
@@ -39,30 +35,26 @@ public class ClientNetwork extends Network {
     @Override
     public void sendMessage(String message) {
         try {
-            outputStream.write(message);
+            outputStream.writeUTF(message);
         } catch (IOException e) {
-            System.out.println("Ошибка во время отправки сообщения");
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void acceptMessage(Controllable controller) {
-        Runnable task = () -> {
-            String message = null;
+        Thread thread = new Thread(() -> {
             try {
-                while (true) {
-                    if((message = bufferedReader.readLine()) != null) {
-                        controller.acceptMessage(message);
-                    }
+                while(true) {
+                    String message = inputStream.readUTF();
+                    Platform.runLater(() -> controller.acceptMessage(message));
                 }
             } catch (IOException e) {
                 System.out.println("Ошибка во время приема сообщения");
                 e.printStackTrace();
             }
-        };
-        Thread messageWaiter = new Thread(task);
-        messageWaiter.setDaemon(true);
-        messageWaiter.start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 }

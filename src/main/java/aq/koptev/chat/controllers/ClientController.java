@@ -31,6 +31,8 @@ public class ClientController implements Controllable {
 
     @FXML
     void initialize() {
+        network = new ClientNetwork();
+        network.acceptMessage(this);
         setWrapListViewTextMessage();
         addActionListeners();
     }
@@ -102,7 +104,7 @@ public class ClientController implements Controllable {
     }
 
     @Override
-    public synchronized void acceptMessage(String message) {
+    public void acceptMessage(String message) {
         chatHistory.getItems().add(message);
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
