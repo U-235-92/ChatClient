@@ -1,6 +1,7 @@
 package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.models.ClientNetwork;
+import aq.koptev.chat.models.Connectable;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -11,7 +12,7 @@ import javafx.util.Callback;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ClientController {
+public class ClientController implements Controllable {
     @FXML
     private ListView<String> chatHistory;
     @FXML
@@ -22,7 +23,7 @@ public class ClientController {
     private BorderPane rootComponent;
     @FXML
     private Button sendButton;
-    private ClientNetwork network;
+    private Connectable network;
 
     private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
 
@@ -63,7 +64,8 @@ public class ClientController {
         });
     }
 
-    private void sendMessage() {
+    @Override
+    public void sendMessage() {
         if(isEmptyMessageField()) {
             return;
         }
@@ -72,11 +74,6 @@ public class ClientController {
         String messageToSend = formatMessageBeforeSend(dateMessage, textMessage);
         network.sendMessage(messageToSend);
         clearMessageField();
-    }
-
-    public synchronized void acceptMessage(String message) {
-        chatHistory.getItems().add(message);
-        chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
 
     private boolean isEmptyMessageField() {
@@ -99,7 +96,14 @@ public class ClientController {
         messageField.setText("");
     }
 
-    public void setNetwork(ClientNetwork network) {
+    @Override
+    public void setNetwork(Connectable network) {
         this.network = network;
+    }
+
+    @Override
+    public synchronized void acceptMessage(String message) {
+        chatHistory.getItems().add(message);
+        chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
 }
