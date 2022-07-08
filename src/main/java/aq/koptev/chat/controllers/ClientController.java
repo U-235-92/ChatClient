@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ClientController implements Controllable {
+
     @FXML
     private ListView<String> chatHistory;
     @FXML
