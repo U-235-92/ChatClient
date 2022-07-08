@@ -50,8 +50,8 @@ public class ClientNetwork extends Network {
                     Platform.runLater(() -> controller.acceptMessage(message));
                 }
             } catch (IOException e) {
-                System.out.println("Ошибка во время приема сообщения");
-                e.printStackTrace();
+                System.out.println("Сбой сервера во время приема сообщения");
+                System.exit(0);
             }
         });
         thread.setDaemon(true);
