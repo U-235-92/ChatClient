@@ -64,7 +64,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>aq.koptev.chatclient/aq.koptev.chat.ClientApplication</mainClass>
+                            <mainClass>aq.koptev.chatclient/aq.koptev.chat.ClientApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

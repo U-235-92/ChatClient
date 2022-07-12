@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane fx:id="rootComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aq.koptev.chat.controllers.ClientController">
+<BorderPane fx:id="rootComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aq.koptev.chat.controllers.ChatController">
     <center>
         <SplitPane dividerPositions="0.15217391304347827" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>

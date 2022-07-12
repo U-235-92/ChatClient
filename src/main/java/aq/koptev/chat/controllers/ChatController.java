@@ -12,7 +12,7 @@ import javafx.util.Callback;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ClientController implements Controllable {
+public class ChatController implements Controllable {
     @FXML
     private ListView<String> chatHistory;
     @FXML
@@ -27,12 +27,10 @@ public class ClientController implements Controllable {
 
     private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
 
-    public ClientController() {}
+    public ChatController() {}
 
     @FXML
     void initialize() {
-        network = new ClientNetwork();
-        network.acceptMessage(this);
         setWrapListViewTextMessage();
         addActionListeners();
     }
@@ -66,8 +64,7 @@ public class ClientController implements Controllable {
         });
     }
 
-    @Override
-    public void sendMessage() {
+    private void sendMessage() {
         if(isEmptyMessageField()) {
             return;
         }
