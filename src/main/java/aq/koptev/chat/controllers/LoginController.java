@@ -65,6 +65,7 @@ public class LoginController implements Controllable {
         String message = login + "#" + password;
         network.sendMessage(message);
 
+
     }
 
     @Override
