@@ -41,6 +41,7 @@ public class ChatController {
         }
         setWrapListViewTextMessage();
         addActionListeners();
+
     }
 
     private void setWrapListViewTextMessage() {
