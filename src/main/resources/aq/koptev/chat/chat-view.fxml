@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
@@ -17,7 +18,10 @@
                     <children>
                         <BorderPane layoutX="-56.0" layoutY="72.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <top>
-                                <FlowPane prefHeight="35.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                <FlowPane alignment="CENTER" prefHeight="35.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label text="В сети" />
+                           </children></FlowPane>
                             </top>
                             <center>
                                 <ListView fx:id="chatUsers" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
@@ -36,7 +40,10 @@
                                                     <children>
                                                         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <top>
-                                                                <Pane prefHeight="35.0" prefWidth="502.0" BorderPane.alignment="CENTER" />
+                                                                <Pane prefHeight="35.0" prefWidth="502.0" BorderPane.alignment="CENTER">
+                                                   <children>
+                                                      <Label fx:id="loginTextField" layoutX="14.0" layoutY="9.0" />
+                                                   </children></Pane>
                                                             </top>
                                                             <center>
                                                                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">

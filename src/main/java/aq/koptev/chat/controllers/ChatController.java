@@ -1,7 +1,6 @@
 package aq.koptev.chat.controllers;
 
-import aq.koptev.chat.models.ClientNetwork;
-import aq.koptev.chat.models.Connectable;
+import aq.koptev.chat.models.ChatConnector;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -9,10 +8,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatController implements Controllable {
+public class ChatController {
+
+    private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy,HH:mm";
     @FXML
     private ListView<String> chatHistory;
     @FXML
@@ -23,14 +25,20 @@ public class ChatController implements Controllable {
     private BorderPane rootComponent;
     @FXML
     private Button sendButton;
-    private Connectable network;
-
-    private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
+    @FXML
+    private Label loginTextField;
+    private ChatConnector connector;
 
     public ChatController() {}
 
     @FXML
     void initialize() {
+        connector = new ChatConnector(this);
+        try {
+            connector.connectProcess();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setWrapListViewTextMessage();
         addActionListeners();
     }
@@ -56,22 +64,35 @@ public class ChatController implements Controllable {
     }
 
     private void addActionListeners() {
-        sendButton.setOnAction((event) -> sendMessage());
+        sendButton.setOnAction((event) -> writeDataStream());
         rootComponent.setOnKeyPressed((event) -> {
             if(event.getCode().equals(KeyCode.ENTER)) {
-                sendMessage();
+                writeDataStream();
             }
         });
     }
 
-    private void sendMessage() {
+    private void writeDataStream() {
         if(isEmptyMessageField()) {
             return;
         }
         String textMessage = textMessage();
         String dateMessage = dateMessage();
-        String messageToSend = formatMessageBeforeSend(dateMessage, textMessage);
-        network.sendMessage(messageToSend);
+        String login = connector.getLogin();
+        try {
+            if(textMessage.startsWith(ChatConnector.AUTHORIZE_COMMAND)) {
+                connector.sendData(textMessage);
+            } else if(textMessage.startsWith(ChatConnector.PERSONAL_MESSAGE_COMMAND)) {
+                textMessage = textMessage.substring(ChatConnector.PERSONAL_MESSAGE_COMMAND.length());
+                String formattedMessage = getFormattedMessagePersonalCommand(login, dateMessage, textMessage);
+                connector.sendData(formattedMessage);
+            } else {
+                String formattedMessage = getFormattedMessageWithoutCommand(login, dateMessage, textMessage);
+                connector.sendData(formattedMessage);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         clearMessageField();
     }
 
@@ -87,21 +108,31 @@ public class ChatController implements Controllable {
         return new SimpleDateFormat(FORMAT_DATE_MESSAGE).format(new Date());
     }
 
-    private String formatMessageBeforeSend(String dateMessage, String textMessage) {
-        return "[" + dateMessage + "] " + textMessage;
+    private String getFormattedMessagePersonalCommand(String login, String dateMessage, String textMessage) {
+        return ChatConnector.PERSONAL_MESSAGE_COMMAND + ChatConnector.SPACE_SYMBOL +
+                getFormattedMessageWithoutCommand(login, dateMessage, textMessage);
+    }
+
+    private String getFormattedMessageWithoutCommand(String login, String dateMessage, String textMessage) {
+        return login + " [" + dateMessage + "] " + textMessage;
     }
 
     private void clearMessageField() {
         messageField.setText("");
     }
 
-    @Override
-    public void setNetwork(Connectable network) {
-        this.network = network;
+    public void setConnectedUsers(String[] connectedUsers) {
+        chatUsers.getItems().removeAll(chatUsers.getItems());
+        for(String user : connectedUsers) {
+            chatUsers.getItems().add(user);
+        }
     }
 
-    @Override
-    public void acceptMessage(String message) {
+    public void setLogin(String login) {
+        loginTextField.setText(login);
+    }
+
+    public void addMessage(String message) {
         chatHistory.getItems().add(message);
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
