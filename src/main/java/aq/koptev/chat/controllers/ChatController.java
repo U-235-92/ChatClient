@@ -53,7 +53,7 @@ public class ChatController {
                         super.updateItem(item, empty);
                         if (!isEmpty()) {
                             text = new Text(item.toString());
-                            text.setWrappingWidth(chatHistory.getPrefWidth());
+                            text.setWrappingWidth(chatHistory.getWidth());
                             setGraphic(text);
                         }
                     }

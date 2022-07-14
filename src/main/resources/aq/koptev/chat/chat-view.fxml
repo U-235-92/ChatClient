@@ -64,7 +64,7 @@
                                                                     <center>
                                                                         <BorderPane prefHeight="282.0" prefWidth="502.0" BorderPane.alignment="CENTER">
                                                                             <center>
-                                                                                <ListView fx:id="chatHistory" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                                                                <ListView fx:id="chatHistory" prefHeight="334.0" prefWidth="478.0" BorderPane.alignment="CENTER" />
                                                                             </center>
                                                                         </BorderPane>
                                                                     </center>
