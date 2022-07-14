@@ -1,6 +1,5 @@
 package aq.koptev.chat;
 
-import aq.koptev.chat.controllers.Controllable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
