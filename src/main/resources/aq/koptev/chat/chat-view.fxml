@@ -24,7 +24,7 @@
                            </children></FlowPane>
                             </top>
                             <center>
-                                <ListView fx:id="chatUsers" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                <ListView fx:id="users" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                             </center>
                         </BorderPane>
                     </children></AnchorPane>

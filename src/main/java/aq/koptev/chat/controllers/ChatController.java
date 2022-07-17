@@ -1,9 +1,15 @@
 package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.models.ChatConnector;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -14,11 +20,11 @@ import java.util.Date;
 
 public class ChatController {
 
-    private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy,HH:mm";
+    private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
     @FXML
     private ListView<String> chatHistory;
     @FXML
-    private ListView<String> chatUsers;
+    private ListView<String> users;
     @FXML
     private TextField messageField;
     @FXML
@@ -28,12 +34,14 @@ public class ChatController {
     @FXML
     private Label loginTextField;
     private ChatConnector connector;
+    private String selectedReceiver;
 
     public ChatController() {}
 
     @FXML
     void initialize() {
         setWrapListViewTextMessage();
+        setUserListViewSelectActivity();
         addActionListeners();
     }
 
@@ -57,33 +65,54 @@ public class ChatController {
         });
     }
 
+    private void setUserListViewSelectActivity() {
+
+        users.setCellFactory(lv -> {
+            MultipleSelectionModel<String> selectionModel = users.getSelectionModel();
+            ListCell<String> cells = new ListCell<>();
+            cells.textProperty().bind(cells.itemProperty());
+            cells.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                users.requestFocus();
+                if(!cells.isEmpty()) {
+                    int index = cells.getIndex();
+                    if(selectionModel.getSelectedIndices().contains(index)) {
+                        selectionModel.clearSelection(index);
+                        selectedReceiver = null;
+                    } else {
+                        selectionModel.select(index);
+                        selectedReceiver = cells.getItem();
+                    }
+                    event.consume();
+                }
+            });
+            return cells;
+        });
+    }
+
     private void addActionListeners() {
-        sendButton.setOnAction((event) -> writeDataStream());
+        sendButton.setOnAction((event) -> writeMessage());
         rootComponent.setOnKeyPressed((event) -> {
             if(event.getCode().equals(KeyCode.ENTER)) {
-                writeDataStream();
+                writeMessage();
             }
         });
     }
 
-    private void writeDataStream() {
+    private void writeMessage() {
         if(isEmptyMessageField()) {
             return;
         }
         String textMessage = textMessage();
-        String dateMessage = dateMessage();
-        String login = connector.getLogin();
+        String sender = connector.getLogin();
+        String messageToSend;
+        if(selectedReceiver == null || selectedReceiver.equals(ChatConnector.COMMON_CHAT)) {
+            messageToSend = String.format("%s %s %s", ChatConnector.COMMON_MESSAGE_COMMAND, sender, textMessage);
+        } else {
+            messageToSend = String.format("%s %s %s %s", ChatConnector.PRIVATE_MESSAGE_COMMAND,
+                    sender, selectedReceiver, textMessage);
+        }
         try {
-            if(textMessage.startsWith(ChatConnector.AUTHENTICATION_COMMAND)) {
-                connector.sendData(textMessage);
-            } else if(textMessage.startsWith(ChatConnector.PERSONAL_MESSAGE_COMMAND)) {
-                textMessage = textMessage.substring(ChatConnector.PERSONAL_MESSAGE_COMMAND.length());
-                String formattedMessage = getFormattedMessagePersonalCommand(login, dateMessage, textMessage);
-                connector.sendData(formattedMessage);
-            } else {
-                String formattedMessage = getFormattedMessageWithoutCommand(login, dateMessage, textMessage);
-                connector.sendData(formattedMessage);
-            }
+            connector.sendMessage(messageToSend);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -95,35 +124,15 @@ public class ChatController {
     }
 
     private String textMessage() {
-        return messageField.getText().trim();
+        return String.format("[%s] %s", dateMessage(), messageField.getText().trim());
     }
 
     private String dateMessage() {
         return new SimpleDateFormat(FORMAT_DATE_MESSAGE).format(new Date());
     }
 
-    private String getFormattedMessagePersonalCommand(String login, String dateMessage, String textMessage) {
-        return ChatConnector.PERSONAL_MESSAGE_COMMAND + ChatConnector.SPACE_SYMBOL +
-                getFormattedMessageWithoutCommand(login, dateMessage, textMessage);
-    }
-
-    private String getFormattedMessageWithoutCommand(String login, String dateMessage, String textMessage) {
-        return login + " [" + dateMessage + "] " + textMessage;
-    }
-
     private void clearMessageField() {
         messageField.setText("");
-    }
-
-    public void setConnectedUsers(String[] connectedUsers) {
-        chatUsers.getItems().removeAll(chatUsers.getItems());
-        for(String user : connectedUsers) {
-            chatUsers.getItems().add(user);
-        }
-    }
-
-    public void setLogin(String login) {
-        loginTextField.setText(login);
     }
 
     public void addMessage(String message) {
@@ -138,10 +147,11 @@ public class ChatController {
 
     public void setUpConnectedUsers(String[] users) {
         if(users != null) {
-            if(chatUsers.getItems().size() > 0) {
-                chatUsers.getItems().removeAll(chatUsers.getItems());
+            if(this.users.getItems().size() > 0) {
+                this.users.getItems().removeAll(this.users.getItems());
             }
-            chatUsers.getItems().addAll(users);
+            this.users.getItems().add(ChatConnector.COMMON_CHAT);
+            this.users.getItems().addAll(users);
         }
     }
 

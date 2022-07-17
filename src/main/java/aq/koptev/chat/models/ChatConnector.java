@@ -20,20 +20,7 @@ public class ChatConnector {
     public static final String USER_DISCONNECT_COMMAND = "#dc";
     public static final String PRIVATE_SERVER_MESSAGE = "#psm";
     public static final String CONNECTED_USERS_REQUEST = "#reqcu";
-
-
-
-
-
-
-
-
-    public static final String USERS_SPLITTER = "#";
-    public static final String SPACE_SYMBOL = " ";
-//    public static final String AUTHORIZE_COMMAND = "//log";
-    public static final String CONNECT_COMMAND = "//connected";
-    public static final String LOGIN_COMMAND = "//login";
-    public static final String PERSONAL_MESSAGE_COMMAND = "//personal";
+    public static final String COMMON_CHAT = "Общий чат";
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 9000;
     private ChatController chatController;
@@ -74,14 +61,13 @@ public class ChatConnector {
             String command = message.split("\\s+", 2)[0];
             switch (command) {
                 case COMMON_MESSAGE_COMMAND:
-                    break;
                 case PRIVATE_MESSAGE_COMMAND:
+                    sendUserMessageToController(message);
                     break;
                 case PRIVATE_SERVER_MESSAGE:
-                    break;
                 case USER_CONNECT_COMMAND:
-                    break;
                 case USER_DISCONNECT_COMMAND:
+                    sendServerMessageToController(message);
                     break;
                 case CONNECTED_USERS_REQUEST:
                     String[] users = getConnectedUsers(message.split("\\s+", 2)[1]);
@@ -95,12 +81,23 @@ public class ChatConnector {
         }
     }
 
+    private void sendUserMessageToController(String message) {
+        String sender = message.split("\\s+", 3)[1];
+        String textMessage = message.split("\\s+", 3)[2];
+        Platform.runLater(() -> chatController.addMessage(String.format("%s %s", sender, textMessage)));
+    }
+
+    private  void sendServerMessageToController(String message) {
+        String textMessage = message.split("\\s+", 2)[1];
+        Platform.runLater(() -> chatController.addMessage(textMessage));
+    }
+
     private String[] getConnectedUsers(String users) {
         return users.split("\\s+");
     }
 
-    public void sendData(String data) throws IOException {
-        outputStream.writeUTF(data);
+    public void sendMessage(String message) throws IOException {
+        outputStream.writeUTF(message);
     }
 
     public String sendAuthMessage(String login, String password) throws IOException {
