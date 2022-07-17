@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -11,8 +12,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.Label?>
-<TabPane fx:id="rootComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="aq.koptev.chat.controllers.AuthController">
+<TabPane fx:id="rootComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aq.koptev.chat.controllers.AuthController">
   <tabs>
     <Tab fx:id="tabEnter" text="Вход">
       <content>
@@ -23,7 +23,7 @@
                         <FlowPane alignment="CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
                               <FlowPane prefHeight="37.0" prefWidth="250.0" />
-                              <Label fx:id="errLabel" textFill="red" text=""></Label>
+                              <Label fx:id="errLabel" text="" textFill="red" />
                               <TextField fx:id="authLoginField" prefHeight="35.0" prefWidth="200.0" promptText="Логин">
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" />
@@ -67,7 +67,10 @@
                      <center>
                         <FlowPane alignment="CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
-                              <FlowPane prefHeight="37.0" prefWidth="250.0" />
+                              <FlowPane alignment="CENTER" prefHeight="37.0" prefWidth="250.0">
+                                 <children>
+                                    <Label fx:id="regMessageLabel" textFill="RED" />
+                                 </children></FlowPane>
                               <TextField fx:id="registerLoginField" prefHeight="35.0" prefWidth="200.0" promptText="Логин">
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" />

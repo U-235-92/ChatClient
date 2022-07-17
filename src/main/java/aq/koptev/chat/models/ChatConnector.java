@@ -15,7 +15,10 @@ public class ChatConnector {
     public static final String COMMON_MESSAGE_COMMAND = "#a";
     public static final String PRIVATE_MESSAGE_COMMAND = "#p";
     public static final String ERROR_AUTHENTICATION_COMMAND = "#errauth";
+
     public static final String OK_AUTHENTICATION_COMMAND = "#okauth";
+    public static final String ERROR_REGISTRATION_COMMAND = "#errreg";
+    public static final String OK_REGISTRATION_COMMAND = "#okreg";
     public static final String USER_CONNECT_COMMAND = "#c";
     public static final String USER_DISCONNECT_COMMAND = "#dc";
     public static final String PRIVATE_SERVER_MESSAGE = "#psm";
@@ -104,6 +107,16 @@ public class ChatConnector {
         outputStream.writeUTF(String.format("%s %s %s", AUTHENTICATION_COMMAND, login, password));
         String answer = inputStream.readUTF();
         if(answer.startsWith(OK_AUTHENTICATION_COMMAND)) {
+            return null;
+        } else {
+            return answer.split("\\s+", 2)[1];
+        }
+    }
+
+    public String sendRegisterMessage(String login, String password) throws IOException {
+        outputStream.writeUTF(String.format("%s %s %s", REGISTRATION_COMMAND, login, password));
+        String answer = inputStream.readUTF();
+        if(answer.startsWith(OK_REGISTRATION_COMMAND)) {
             return null;
         } else {
             return answer.split("\\s+", 2)[1];

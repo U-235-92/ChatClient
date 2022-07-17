@@ -4,6 +4,7 @@ import aq.koptev.chat.ClientApp;
 import aq.koptev.chat.models.ChatConnector;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
@@ -40,6 +41,9 @@ public class AuthController {
     @FXML
     private Label errLabel;
 
+    @FXML
+    private Label regMessageLabel;
+
     private ClientApp clientApp;
 
     private ChatConnector connector;
@@ -60,8 +64,33 @@ public class AuthController {
                     String answer = connector.sendAuthMessage(login, password);
                     if(answer != null) {
                         errLabel.setText(answer);
+                        authLoginField.clear();
+                        authPasswordField.clear();
                     } else {
                         clientApp.showChatView();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        registerBtn.setOnAction((event) -> {
+            regMessageLabel.setTextFill(Color.RED);
+            String login = registerLoginField.getText();
+            String password = registerPasswordField.getText();
+            if(login.length() == 0) {
+                regMessageLabel.setText("Поле логин не может быть пустым");
+            } else {
+                try {
+                    String answer = connector.sendRegisterMessage(login, password);
+                    if(answer != null) {
+                        regMessageLabel.setText(answer);
+                    } else {
+                        regMessageLabel.setTextFill(Color.GREEN);
+                        regMessageLabel.setText("Регистрация успешно завершена");
+                        registerLoginField.clear();
+                        registerPasswordField.clear();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
