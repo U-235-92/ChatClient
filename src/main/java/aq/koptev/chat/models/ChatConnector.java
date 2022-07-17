@@ -130,4 +130,12 @@ public class ChatConnector {
     public void setChatController(ChatController controller) {
         this.chatController = controller;
     }
+
+    public void closeConnection() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -48,9 +48,37 @@ public class AuthController {
 
     private ChatConnector connector;
 
+    private int countdown = 0;
+    private boolean isAuthenticationSuccess = false;
+
     @FXML
     void initialize() {
+        startCountdownToExit(5);
         addActionListeners();
+    }
+
+    private void startCountdownToExit(int seconds) {
+        countdown = seconds;
+        Thread thread = new Thread(() -> {
+            while(countdown-- > 0) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println(countdown);
+                if(isAuthenticationSuccess) {
+                    break;
+                }
+            }
+            if(isAuthenticationSuccess) {
+                return;
+            } else {
+                connector.closeConnection();
+                System.exit(0);
+            }
+        });
+        thread.start();
     }
 
     private void addActionListeners() {
@@ -67,6 +95,7 @@ public class AuthController {
                         authLoginField.clear();
                         authPasswordField.clear();
                     } else {
+                        isAuthenticationSuccess = true;
                         clientApp.showChatView();
                     }
                 } catch (IOException e) {
