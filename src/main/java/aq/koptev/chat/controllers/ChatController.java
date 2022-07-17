@@ -33,12 +33,6 @@ public class ChatController {
 
     @FXML
     void initialize() {
-        connector = new ChatConnector(this);
-        try {
-            connector.connectProcess();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         setWrapListViewTextMessage();
         addActionListeners();
     }
@@ -80,7 +74,7 @@ public class ChatController {
         String dateMessage = dateMessage();
         String login = connector.getLogin();
         try {
-            if(textMessage.startsWith(ChatConnector.AUTHORIZE_COMMAND)) {
+            if(textMessage.startsWith(ChatConnector.AUTHENTICATION_COMMAND)) {
                 connector.sendData(textMessage);
             } else if(textMessage.startsWith(ChatConnector.PERSONAL_MESSAGE_COMMAND)) {
                 textMessage = textMessage.substring(ChatConnector.PERSONAL_MESSAGE_COMMAND.length());
@@ -135,5 +129,23 @@ public class ChatController {
     public void addMessage(String message) {
         chatHistory.getItems().add(message);
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
+    }
+
+
+    public void setConnector(ChatConnector connector) {
+        this.connector = connector;
+    }
+
+    public void setUpConnectedUsers(String[] users) {
+        if(users != null) {
+            if(chatUsers.getItems().size() > 0) {
+                chatUsers.getItems().removeAll(chatUsers.getItems());
+            }
+            chatUsers.getItems().addAll(users);
+        }
+    }
+
+    public void setUpUserLogin() {
+        loginTextField.setText(connector.getLogin());
     }
 }
