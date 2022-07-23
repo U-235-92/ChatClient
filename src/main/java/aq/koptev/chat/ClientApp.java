@@ -2,6 +2,7 @@ package aq.koptev.chat;
 
 import aq.koptev.chat.controllers.AuthController;
 import aq.koptev.chat.controllers.ChatController;
+import aq.koptev.chat.controllers.SettingsController;
 import aq.koptev.chat.models.ChatConnector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,9 +15,11 @@ public class ClientApp extends Application {
 
     private Stage chatStage;
     private Stage authStage;
+    private Stage settingsStage;
     private ChatConnector connector;
     private ChatController chatController;
     private AuthController authController;
+    private SettingsController settingsController;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -25,6 +28,7 @@ public class ClientApp extends Application {
 
         buildAuthView();
         buildChatView();
+        buildSettingsView();
     }
 
     private void buildAuthView() throws IOException {
@@ -45,7 +49,19 @@ public class ClientApp extends Application {
         chatStage.setTitle("Чат");
         chatStage.setScene(scene);
         chatController = fxmlLoader.getController();
+        chatController.setClientApp(this);
         chatController.setConnector(connector);
+    }
+
+    private void buildSettingsView() throws IOException {
+        settingsStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("settings-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 400, 300);
+        settingsStage.setTitle("Настройки");
+        settingsStage.setScene(scene);
+        settingsController = fxmlLoader.getController();
+        settingsController.setClientApp(this);
+        settingsController.setConnector(connector);
     }
 
     public void showChatView() throws IOException {
@@ -57,6 +73,15 @@ public class ClientApp extends Application {
 
     private void closeAuthView() {
         authStage.close();
+    }
+
+    public void showSettingsView() {
+        settingsController.setUpLogin();
+        settingsStage.show();
+    }
+
+    public void closeSettingsView() {
+        settingsStage.close();
     }
 
     public static void main(String[] args) {

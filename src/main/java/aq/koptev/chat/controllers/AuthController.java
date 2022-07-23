@@ -40,7 +40,7 @@ public class AuthController {
     private Tab tabRegister;
 
     @FXML
-    private Label errLabel;
+    private Label authMessageLabel;
 
     @FXML
     private Label regMessageLabel;
@@ -87,12 +87,12 @@ public class AuthController {
             String login = authLoginField.getText();
             String password = authPasswordField.getText();
             if(login.length() == 0) {
-                errLabel.setText("Поле логин не может быть пустым");
+                authMessageLabel.setText("Поле логин не может быть пустым");
             } else {
                 try {
                     String answer = connector.sendAuthMessage(login, password);
                     if(answer != null) {
-                        errLabel.setText(answer);
+                        authMessageLabel.setText(answer);
                         authLoginField.clear();
                         authPasswordField.clear();
                     } else {

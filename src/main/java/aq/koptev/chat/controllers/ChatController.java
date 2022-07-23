@@ -1,5 +1,6 @@
 package aq.koptev.chat.controllers;
 
+import aq.koptev.chat.ClientApp;
 import aq.koptev.chat.models.ChatConnector;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -27,9 +28,12 @@ public class ChatController {
     @FXML
     private Button sendButton;
     @FXML
+    private Button settingsButton;
+    @FXML
     private Label loginTextField;
     private ChatConnector connector;
     private String selectedReceiver;
+    private ClientApp clientApp;
 
     public ChatController() {}
 
@@ -86,6 +90,9 @@ public class ChatController {
 
     private void addActionListeners() {
         sendButton.setOnAction((event) -> writeMessage());
+        settingsButton.setOnAction((event) -> {
+            clientApp.showSettingsView();
+        });
         rootComponent.setOnKeyPressed((event) -> {
             if(event.getCode().equals(KeyCode.ENTER)) {
                 writeMessage();
@@ -152,5 +159,9 @@ public class ChatController {
 
     public void setUpUserLogin() {
         loginTextField.setText(connector.getLogin());
+    }
+
+    public void setClientApp(ClientApp clientApp) {
+        this.clientApp = clientApp;
     }
 }

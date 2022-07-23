@@ -1,6 +1,7 @@
 package aq.koptev.chat.models;
 
 import aq.koptev.chat.controllers.ChatController;
+import aq.koptev.chat.controllers.SettingsController;
 import javafx.application.Platform;
 
 import java.io.DataInputStream;
@@ -21,12 +22,16 @@ public class ChatConnector {
     public static final String OK_REGISTRATION_COMMAND = "#okreg";
     public static final String USER_CONNECT_COMMAND = "#c";
     public static final String USER_DISCONNECT_COMMAND = "#dc";
+    public static final String CHANGE_USER_ACCOUNT_COMMAND = "#chuacc";
     public static final String PRIVATE_SERVER_MESSAGE = "#psm";
+    public static final String OK_CHANGE_USER_ACCOUNT_MESSAGE = "#okchlog";
+    public static final String ERROR_CHANGE_LOGIN_MESSAGE = "#errchlog";
     public static final String CONNECTED_USERS_REQUEST = "#reqcu";
     public static final String COMMON_CHAT = "Общий чат";
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 9000;
     private ChatController chatController;
+    private SettingsController settingsController;
     private int port;
     private String host;
     private Socket socket;
@@ -79,6 +84,16 @@ public class ChatConnector {
                 case OK_AUTHENTICATION_COMMAND:
                     this.login = message.split("\\s+", 2)[1];
                     Platform.runLater(() -> chatController.setUpUserLogin());
+                    break;
+                case OK_CHANGE_USER_ACCOUNT_MESSAGE:
+                    this.login = message.split("\\s+", 3)[1];
+                    String okMessage = message.split("\\s+", 3)[2];
+                    Platform.runLater(() -> chatController.setUpUserLogin());
+                    Platform.runLater(() -> settingsController.printOkChangeLoginMessage(okMessage));
+                    break;
+                case ERROR_CHANGE_LOGIN_MESSAGE:
+                    String errorMessage = message.split("\\s+", 2)[1];
+                    settingsController.printErrorChangeLoginMessage(errorMessage);
                     break;
             }
         }
