@@ -53,7 +53,7 @@ public class AuthController {
 
     @FXML
     void initialize() {
-        startCountdownToExit(5);
+//        startCountdownToExit(5);
         addActionListeners();
     }
 
