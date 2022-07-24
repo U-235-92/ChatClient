@@ -83,6 +83,7 @@ public class AuthController {
 
     private void addActionListeners() {
         enterBtn.setOnAction((event) -> {
+            authMessageLabel.setTextFill(Color.RED);
             String login = authLoginField.getText();
             String password = authPasswordField.getText();
             if(login.length() == 0) {
