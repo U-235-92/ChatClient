@@ -2,6 +2,7 @@ package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.ClientApp;
 import aq.koptev.chat.models.ChatConnector;
+import aq.koptev.chat.models.Command;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -108,9 +109,9 @@ public class ChatController {
         String sender = connector.getLogin();
         String messageToSend;
         if(selectedReceiver == null || selectedReceiver.equals(ChatConnector.COMMON_CHAT)) {
-            messageToSend = String.format("%s %s %s", ChatConnector.COMMON_MESSAGE_COMMAND, sender, textMessage);
+            messageToSend = String.format("%s %s %s", Command.COMMON_MESSAGE_COMMAND.getCommand(), sender, textMessage);
         } else {
-            messageToSend = String.format("%s %s %s %s", ChatConnector.PRIVATE_MESSAGE_COMMAND,
+            messageToSend = String.format("%s %s %s %s", Command.PRIVATE_USER_MESSAGE_COMMAND.getCommand(),
                     sender, selectedReceiver, textMessage);
         }
         try {

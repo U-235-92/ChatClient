@@ -2,6 +2,7 @@ package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.ClientApp;
 import aq.koptev.chat.models.ChatConnector;
+import aq.koptev.chat.models.Command;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,7 +42,7 @@ public class SettingsController {
             String oldLogin = connector.getLogin();
             String newLogin = loginField.getText();
             try {
-                connector.sendMessage(String.format("%s %s %s", ChatConnector.CHANGE_USER_ACCOUNT_COMMAND, oldLogin, newLogin));
+                connector.sendMessage(String.format("%s %s %s", Command.CHANGE_USER_LOGIN_COMMAND.getCommand(), oldLogin, newLogin));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
