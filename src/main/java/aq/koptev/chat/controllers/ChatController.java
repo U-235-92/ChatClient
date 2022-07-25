@@ -31,7 +31,7 @@ public class ChatController {
     @FXML
     private Button settingsButton;
     @FXML
-    private Label loginTextField;
+    private Label loginLabel;
     private ChatConnector connector;
     private String selectedReceiver;
     private ClientApp clientApp;
@@ -106,7 +106,8 @@ public class ChatController {
             return;
         }
         String textMessage = textMessage();
-        String sender = connector.getLogin();
+//        String sender = connector.getLogin();
+        String sender = connector.getUser().getLogin();
         String messageToSend;
         if(selectedReceiver == null || selectedReceiver.equals(ChatConnector.COMMON_CHAT)) {
             messageToSend = String.format("%s %s %s", Command.COMMON_MESSAGE_COMMAND.getCommand(), sender, textMessage);
@@ -158,9 +159,11 @@ public class ChatController {
         }
     }
 
-    public void setUpUserLogin() {
-        loginTextField.setText(connector.getLogin());
+    public void setUpUserLogin(String login) {
+//        loginLabel.setText(connector.getLogin());
+        loginLabel.setText(login);
     }
+
 
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;

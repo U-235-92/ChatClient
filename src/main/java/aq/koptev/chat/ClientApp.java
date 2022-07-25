@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ClientApp extends Application {
-
     private Stage chatStage;
     private Stage authStage;
     private Stage settingsStage;

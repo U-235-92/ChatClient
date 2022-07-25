@@ -39,10 +39,11 @@ public class SettingsController {
         });
 
         saveButton.setOnAction((event) -> {
-            String oldLogin = connector.getLogin();
+//            String oldLogin = connector.getLogin();
+            String oldLogin = connector.getUser().getLogin();
             String newLogin = loginField.getText();
             try {
-                connector.sendMessage(String.format("%s %s %s", Command.CHANGE_USER_LOGIN_COMMAND.getCommand(), oldLogin, newLogin));
+                connector.sendMessage(String.format("%s %s %s", Command.CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand(), oldLogin, newLogin));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -64,7 +65,8 @@ public class SettingsController {
     }
 
     public void setUpLogin() {
-        loginField.setText(connector.getLogin());
+//        loginField.setText(connector.getLogin());connector.getUser().getLogin()
+        loginField.setText(connector.getUser().getLogin());
     }
 
     public void printErrorChangeLoginMessage(String message) {

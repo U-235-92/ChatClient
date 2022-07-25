@@ -21,7 +21,9 @@ public class ChatConnector {
     private Socket socket;
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
-    private String login;
+//    private String login;
+
+    private User user;
 
     public ChatConnector() throws IOException {
         this(DEFAULT_HOST, DEFAULT_PORT);
@@ -62,14 +64,24 @@ public class ChatConnector {
                 String[] users = getConnectedUsers(message.split("\\s+", 2)[1]);
                 Platform.runLater(() -> chatController.setUpConnectedUsers(users));
             } else if(command.equals(Command.OK_AUTHENTICATION_COMMAND.getCommand())) {
-                this.login = message.split("\\s+", 2)[1];
-                Platform.runLater(() -> chatController.setUpUserLogin());
-            } else if(command.equals(Command.OK_CHANGE_LOGIN_MESSAGE.getCommand())) {
-                this.login = message.split("\\s+", 3)[1];
-                String okMessage = message.split("\\s+", 3)[2];
-                Platform.runLater(() -> chatController.setUpUserLogin());
-                Platform.runLater(() -> settingsController.printOkChangeLoginMessage(okMessage));
-            } else if(command.equals(Command.ERROR_CHANGE_LOGIN_MESSAGE.getCommand())) {
+                String login = "";
+                String password = "";
+                if(message.split("\\s+", 3).length == 2) {
+                    login = message.split("\\s+", 3)[1];
+                } else {
+                    login = message.split("\\s+", 3)[1];
+                    password = message.split("\\s+", 3)[2];
+                }
+                user = new User(login, password);
+                Platform.runLater(() -> chatController.setUpUserLogin(user.getLogin()));
+            } else if(command.equals(Command.OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
+//                user.setLogin(message.split("\\s+", 3)[1]);
+//                user.setPassword(message.split("\\s+", 3)[2]);
+////                this.login = message.split("\\s+", 3)[1];
+//                String okMessage = message.split("\\s+", 3)[2];
+//                Platform.runLater(() -> chatController.setUpUserLogin());
+//                Platform.runLater(() -> settingsController.printOkChangeLoginMessage(okMessage));
+            } else if(command.equals(Command.ERROR_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
                 String errorMessage = message.split("\\s+", 2)[1];
                 settingsController.printErrorChangeLoginMessage(errorMessage);
             }
@@ -116,12 +128,16 @@ public class ChatConnector {
         }
     }
 
-    public String getLogin() {
-        return login;
-    }
+//    public String getLogin() {
+//        return login;
+//    }
 
     public void setChatController(ChatController controller) {
         this.chatController = controller;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void closeConnection() {
