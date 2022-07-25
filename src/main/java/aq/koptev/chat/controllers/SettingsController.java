@@ -39,13 +39,26 @@ public class SettingsController {
         });
 
         saveButton.setOnAction((event) -> {
-//            String oldLogin = connector.getLogin();
             String oldLogin = connector.getUser().getLogin();
-            String newLogin = loginField.getText();
-            try {
-                connector.sendMessage(String.format("%s %s %s", Command.CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand(), oldLogin, newLogin));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            String newLogin = loginField.getText().trim();
+            String oldPassword = connector.getUser().getPassword();
+            String newPassword = passwordField.getText().trim();
+            if(newLogin.equals("")) {
+                messageLabel.setTextFill(Color.RED);
+                messageLabel.setText("Поле логин не может быть пустым");
+            } else if(newLogin.matches("\\s+")) {
+                messageLabel.setTextFill(Color.RED);
+                messageLabel.setText("Поле логин не может содержать пробел");
+            } else if(newLogin.length() > 30 || newPassword.length() > 30) {
+                messageLabel.setTextFill(Color.RED);
+                messageLabel.setText("Логин и пароль не могут быть больше 30 символов");
+            } else {
+                try {
+                    connector.sendMessage(String.format("%s %s %s %s %s",
+                            Command.CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand(), oldLogin, newLogin, oldPassword, newPassword));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
@@ -65,8 +78,11 @@ public class SettingsController {
     }
 
     public void setUpLogin() {
-//        loginField.setText(connector.getLogin());connector.getUser().getLogin()
         loginField.setText(connector.getUser().getLogin());
+    }
+
+    public void setUpPassword() {
+        passwordField.setText(connector.getUser().getPassword());
     }
 
     public void printErrorChangeLoginMessage(String message) {

@@ -75,15 +75,24 @@ public class ChatConnector {
                 user = new User(login, password);
                 Platform.runLater(() -> chatController.setUpUserLogin(user.getLogin()));
             } else if(command.equals(Command.OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
-//                user.setLogin(message.split("\\s+", 3)[1]);
-//                user.setPassword(message.split("\\s+", 3)[2]);
-////                this.login = message.split("\\s+", 3)[1];
-//                String okMessage = message.split("\\s+", 3)[2];
-//                Platform.runLater(() -> chatController.setUpUserLogin());
-//                Platform.runLater(() -> settingsController.printOkChangeLoginMessage(okMessage));
+                String login;
+                String password;
+                if(message.split("\\s+", 2).length > 1) {
+                    login = message.split("\\s+", 2)[0];
+                    password = message.split("\\s+", 2)[1];
+                    user.setLogin(login);
+                    user.setPassword(password);
+                } else {
+                    login = message.split("\\s+", 2)[0];
+                    password = "";
+                    user.setLogin(login);
+                    user.setPassword(password);
+                }
+                Platform.runLater(() -> chatController.setUpUserLogin(login));
+                Platform.runLater(() -> settingsController.printOkChangeLoginMessage("Успешно"));
             } else if(command.equals(Command.ERROR_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
                 String errorMessage = message.split("\\s+", 2)[1];
-                settingsController.printErrorChangeLoginMessage(errorMessage);
+                Platform.runLater(() -> settingsController.printErrorChangeLoginMessage(errorMessage));
             }
         }
     }
@@ -128,12 +137,12 @@ public class ChatConnector {
         }
     }
 
-//    public String getLogin() {
-//        return login;
-//    }
-
     public void setChatController(ChatController controller) {
         this.chatController = controller;
+    }
+
+    public void setSettingsController(SettingsController controller) {
+        this.settingsController = controller;
     }
 
     public User getUser() {

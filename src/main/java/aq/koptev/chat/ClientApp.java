@@ -76,7 +76,9 @@ public class ClientApp extends Application {
 
     public void showSettingsView() {
         settingsController.setUpLogin();
+        settingsController.setUpPassword();
         settingsStage.show();
+        connector.setSettingsController(settingsController);
     }
 
     public void closeSettingsView() {
