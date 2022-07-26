@@ -1,8 +1,8 @@
 package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.ClientApp;
-import aq.koptev.chat.models.ChatConnector;
 import aq.koptev.chat.models.Command;
+import aq.koptev.chat.models.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -11,12 +11,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatController {
+public class ChatController implements Observer {
 
+    private final String COMMON_CHAT = "Общий чат";
     private final String FORMAT_DATE_MESSAGE = "dd-MM-yyyy HH:mm";
     @FXML
     private ListView<String> chatHistory;
@@ -32,7 +32,7 @@ public class ChatController {
     private Button settingsButton;
     @FXML
     private Label loginLabel;
-    private ChatConnector connector;
+    private Observable connector;
     private String selectedReceiver;
     private ClientApp clientApp;
 
@@ -106,19 +106,14 @@ public class ChatController {
             return;
         }
         String textMessage = textMessage();
-//        String sender = connector.getLogin();
-        String sender = connector.getUser().getLogin();
+        String sender = loginLabel.getText();
         String messageToSend;
-        if(selectedReceiver == null || selectedReceiver.equals(ChatConnector.COMMON_CHAT)) {
-            messageToSend = String.format("%s %s %s", Command.COMMON_MESSAGE_COMMAND.getCommand(), sender, textMessage);
+        if(selectedReceiver == null || selectedReceiver.equals(COMMON_CHAT)) {
+            messageToSend = String.format("%s %s", sender, textMessage);
+            connector.sendMessage(Command.COMMON_MESSAGE_COMMAND, messageToSend);
         } else {
-            messageToSend = String.format("%s %s %s %s", Command.PRIVATE_USER_MESSAGE_COMMAND.getCommand(),
-                    sender, selectedReceiver, textMessage);
-        }
-        try {
-            connector.sendMessage(messageToSend);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            messageToSend = String.format("%s %s %s", sender, selectedReceiver, textMessage);
+            connector.sendMessage(Command.PRIVATE_MESSAGE_COMMAND, messageToSend);
         }
         clearMessageField();
     }
@@ -139,33 +134,91 @@ public class ChatController {
         messageField.setText("");
     }
 
-    public void addMessage(String message) {
+    @Override
+    public synchronized void update(Command command, String message) {
+        switch (command) {
+            case COMMON_MESSAGE_COMMAND:
+            case PRIVATE_MESSAGE_COMMAND:
+                processUserMessage(message);
+                break;
+            case USER_CONNECT_COMMAND:
+            case USER_DISCONNECT_COMMAND:
+                processServerMessage(message);
+                break;
+            case GET_CONNECTED_USERS_COMMAND:
+                processConnectionUsers(message);
+                break;
+            case GET_CONNECTED_USER_COMMAND:
+                processConnectionUser(message);
+                break;
+            case OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND:
+                processSuccessUserSettings(message);
+                break;
+            case ERROR_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND:
+                processErrorUserSettings(message);
+                break;
+        }
+    }
+
+    private void processUserMessage(String message) {
+        String sender = message.split("\\s+", 2)[0];
+        String textMessage = message.split("\\s+", 2)[1];
+        addMessage(String.format("%s %s", sender, textMessage));
+    }
+
+    private void processServerMessage(String message) {
+        addMessage(message);
+    }
+
+    private void addMessage(String message) {
         chatHistory.getItems().add(message);
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
 
-
-    public void setConnector(ChatConnector connector) {
-        this.connector = connector;
+    private void processConnectionUsers(String message) {
+        String[] users = message.split("\\s+");
+        addConnectedUsers(users);
     }
 
-    public void setUpConnectedUsers(String[] users) {
+    private void addConnectedUsers(String[] users) {
         if(users != null) {
             if(this.users.getItems().size() > 0) {
                 this.users.getItems().removeAll(this.users.getItems());
             }
-            this.users.getItems().add(ChatConnector.COMMON_CHAT);
+            this.users.getItems().add(COMMON_CHAT);
             this.users.getItems().addAll(users);
         }
     }
 
-    public void setUpUserLogin(String login) {
-//        loginLabel.setText(connector.getLogin());
+    private void processConnectionUser(String message) {
+        String login = "";
+        String password = "";
+        if(message.split("\\s+", 2).length > 1) {
+            login = message.split("\\s+", 2)[0];
+            password = message.split("\\s+", 2)[1];
+        } else {
+            login = message.split("\\s+", 2)[0];
+        }
+        setUserLogin(login);
+    }
+
+    private void setUserLogin(String login) {
         loginLabel.setText(login);
     }
 
+    private void processSuccessUserSettings(String message) {
+
+    }
+
+    private void processErrorUserSettings(String message) {
+
+    }
 
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
+    }
+
+    public void setConnector(Observable connector) {
+        this.connector = connector;
     }
 }
