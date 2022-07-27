@@ -136,6 +136,7 @@ public class ChatController implements Observer {
 
     @Override
     public synchronized void update(Command command, String message) {
+//        System.out.println(command.getCommand() + " " + message);
         switch (command) {
             case COMMON_MESSAGE_COMMAND:
             case PRIVATE_MESSAGE_COMMAND:
@@ -168,6 +169,7 @@ public class ChatController implements Observer {
 
     private void processServerMessage(String message) {
         addMessage(message);
+        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");/////////////////////////
     }
 
     private void addMessage(String message) {
@@ -178,6 +180,7 @@ public class ChatController implements Observer {
     private void processConnectionUsers(String message) {
         String[] users = message.split("\\s+");
         addConnectedUsers(users);
+        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");//////////////////////
     }
 
     private void addConnectedUsers(String[] users) {
@@ -200,6 +203,7 @@ public class ChatController implements Observer {
             login = message.split("\\s+", 2)[0];
         }
         setUserLogin(login);
+        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");//////////////////////
     }
 
     private void setUserLogin(String login) {

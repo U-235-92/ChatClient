@@ -37,7 +37,7 @@ public class Connector implements Observable {
         waitMessage();
     }
 
-    private void waitMessage() {
+    private synchronized void waitMessage() {
         Thread thread = new Thread(() -> {
             while(true) {
                 String incoming;
@@ -53,7 +53,8 @@ public class Connector implements Observable {
                         command = Command.UNSUPPORTED_COMMAND;
                         message = "";
                     }
-                    Platform.runLater(() -> notifyObservers());
+//                    System.out.println(command.getCommand() + " " + message);
+                    notifyObservers();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -64,12 +65,10 @@ public class Connector implements Observable {
     }
 
     private void notifyObservers() {
-        if(observers.size() > 0) {
-            if(command != null && message != null) {
-                for(Observer obs : observers) {
-                    obs.update(command, message);
-                }
-            }
+//        System.out.println("NOTIFY_OBSERVERS");
+        for(Observer obs : observers) {
+//            System.out.println(command.getCommand() + " " + message);
+            Platform.runLater(() -> obs.update(command, message));
         }
     }
 
