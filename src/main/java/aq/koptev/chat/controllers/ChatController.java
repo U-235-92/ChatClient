@@ -136,7 +136,6 @@ public class ChatController implements Observer {
 
     @Override
     public synchronized void update(Command command, String message) {
-//        System.out.println(command.getCommand() + " " + message);
         switch (command) {
             case COMMON_MESSAGE_COMMAND:
             case PRIVATE_MESSAGE_COMMAND:
@@ -149,7 +148,7 @@ public class ChatController implements Observer {
             case GET_CONNECTED_USERS_COMMAND:
                 processConnectionUsers(message);
                 break;
-            case GET_CONNECTED_USER_COMMAND:
+            case GET_CONNECTED_USER_META_COMMAND:
                 processConnectionUser(message);
                 break;
             case OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND:
@@ -169,7 +168,7 @@ public class ChatController implements Observer {
 
     private void processServerMessage(String message) {
         addMessage(message);
-        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");/////////////////////////
+        connector.sendMessage(Command.SET_CONNECTED_USERS_COMMAND, "");/////////////////////////
     }
 
     private void addMessage(String message) {
@@ -180,7 +179,6 @@ public class ChatController implements Observer {
     private void processConnectionUsers(String message) {
         String[] users = message.split("\\s+");
         addConnectedUsers(users);
-        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");//////////////////////
     }
 
     private void addConnectedUsers(String[] users) {
@@ -203,7 +201,7 @@ public class ChatController implements Observer {
             login = message.split("\\s+", 2)[0];
         }
         setUserLogin(login);
-        connector.sendMessage(Command.RECEIVE_MESSAGE_COMMAND, "");//////////////////////
+        connector.sendMessage(Command.USER_CONNECT_COMMAND, String.format("Пользователь %s вошел в чат", login));//////////////////////
     }
 
     private void setUserLogin(String login) {

@@ -109,15 +109,15 @@ public class AuthController implements Observer {
     }
 
     private void processSuccessAuthentication(String message) {
-//        String login = "";
-//        String password = "";
-//        if(message.split("\\s+", 2).length > 1) {
-//            login = message.split("\\s+", 2)[0];
-//            password = message.split("\\s+", 2)[1];
-//        } else {
-//            login = message.split("\\s+", 2)[0];
-//        }
-//        connector.sendMessage(Command.GET_CONNECTED_USER_COMMAND, String.format("%s %s", login, password));
+        String login = "";
+        String password = "";
+        if(message.split("\\s+", 2).length > 1) {
+            login = message.split("\\s+", 2)[0];
+            password = message.split("\\s+", 2)[1];
+        } else {
+            login = message.split("\\s+", 2)[0];
+        }
+        connector.sendMessage(Command.SET_CONNECTED_USER_META_COMMAND, String.format("%s %s", login, password));
 //        connector.sendMessage(Command.USER_CONNECT_COMMAND, String.format("Пользователь %s вошел в чат", login));
 //        connector.sendMessage(Command.GET_CONNECTED_USERS_COMMAND, null);
         try {
