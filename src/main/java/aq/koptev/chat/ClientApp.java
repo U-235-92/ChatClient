@@ -3,7 +3,9 @@ package aq.koptev.chat;
 import aq.koptev.chat.controllers.AuthController;
 import aq.koptev.chat.controllers.ChatController;
 import aq.koptev.chat.controllers.SettingsController;
-import aq.koptev.chat.models.ChatConnector;
+import aq.koptev.chat.models.Command;
+import aq.koptev.chat.models.Connector;
+import aq.koptev.chat.models.Observable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +17,7 @@ public class ClientApp extends Application {
     private Stage chatStage;
     private Stage authStage;
     private Stage settingsStage;
-    private ChatConnector connector;
+    private Observable connector;
     private ChatController chatController;
     private AuthController authController;
     private SettingsController settingsController;
@@ -23,8 +25,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         chatStage = stage;
-        connector = new ChatConnector();
-
+        connector = new Connector();
         buildAuthView();
         buildChatView();
         buildSettingsView();
@@ -38,6 +39,7 @@ public class ClientApp extends Application {
         authStage.setScene(scene);
         authStage.show();
         authController = fxmlLoader.getController();
+        connector.registerObserver(authController);
         authController.setConnector(connector);
         authController.setClientApp(this);
     }
@@ -48,6 +50,7 @@ public class ClientApp extends Application {
         chatStage.setTitle("Чат");
         chatStage.setScene(scene);
         chatController = fxmlLoader.getController();
+        connector.registerObserver(chatController);
         chatController.setClientApp(this);
         chatController.setConnector(connector);
     }
@@ -59,6 +62,7 @@ public class ClientApp extends Application {
         settingsStage.setTitle("Настройки");
         settingsStage.setScene(scene);
         settingsController = fxmlLoader.getController();
+        connector.registerObserver(settingsController);
         settingsController.setClientApp(this);
         settingsController.setConnector(connector);
     }
@@ -66,8 +70,6 @@ public class ClientApp extends Application {
     public void showChatView() throws IOException {
         closeAuthView();
         chatStage.show();
-        connector.waitChatMessages();
-        connector.setChatController(chatController);
     }
 
     private void closeAuthView() {
@@ -75,10 +77,6 @@ public class ClientApp extends Application {
     }
 
     public void showSettingsView() {
-        settingsController.setLogin();
-        settingsController.setPassword();
-        settingsStage.show();
-        connector.setSettingsController(settingsController);
     }
 
     public void closeSettingsView() {
