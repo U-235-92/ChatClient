@@ -77,11 +77,11 @@ public class SettingsController {
         this.clientApp = clientApp;
     }
 
-    public void setUpLogin() {
+    public void setLogin() {
         loginField.setText(connector.getUser().getLogin());
     }
 
-    public void setUpPassword() {
+    public void setPassword() {
         passwordField.setText(connector.getUser().getPassword());
     }
 

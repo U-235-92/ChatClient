@@ -63,7 +63,7 @@ public class ChatConnector {
             } else if(command.equals(Command.GET_CONNECTED_USERS_COMMAND.getCommand())) {
                 String[] users = getConnectedUsers(message.split("\\s+", 2)[1]);
                 Platform.runLater(() -> chatController.setUpConnectedUsers(users));
-            } else if(command.equals(Command.OK_AUTHENTICATION_COMMAND.getCommand())) {
+            } else if(command.equals(Command.GET_CONNECTED_USER_COMMAND.getCommand())) {
                 String login = "";
                 String password = "";
                 if(message.split("\\s+", 3).length == 2) {
@@ -73,7 +73,7 @@ public class ChatConnector {
                     password = message.split("\\s+", 3)[2];
                 }
                 user = new User(login, password);
-                Platform.runLater(() -> chatController.setUpUserLogin(user.getLogin()));
+                Platform.runLater(() -> chatController.setUserLogin(user.getLogin()));
             } else if(command.equals(Command.OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
                 String login;
                 String password;
@@ -88,7 +88,7 @@ public class ChatConnector {
                     user.setLogin(login);
                     user.setPassword(password);
                 }
-                Platform.runLater(() -> chatController.setUpUserLogin(login));
+                Platform.runLater(() -> chatController.setUserLogin(login));
                 Platform.runLater(() -> settingsController.printOkChangeLoginMessage("Успешно"));
             } else if(command.equals(Command.ERROR_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND.getCommand())) {
                 String errorMessage = message.split("\\s+", 2)[1];

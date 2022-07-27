@@ -159,7 +159,7 @@ public class ChatController {
         }
     }
 
-    public void setUpUserLogin(String login) {
+    public void setUserLogin(String login) {
 //        loginLabel.setText(connector.getLogin());
         loginLabel.setText(login);
     }
