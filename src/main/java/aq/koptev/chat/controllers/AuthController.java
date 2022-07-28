@@ -85,7 +85,7 @@ public class AuthController implements Observer {
             if(login.length() == 0) {
                 regMessageLabel.setText("Поле логин не может быть пустым");
             } else {
-                connector.sendMessage(Command.AUTHENTICATION_CLIENT_COMMAND, String.format("%s %s", login, password));
+                connector.sendMessage(Command.REGISTRATION_CLIENT_COMMAND, String.format("%s %s", login, password));
             }
         });
     }

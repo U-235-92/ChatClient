@@ -77,7 +77,7 @@ public class Connector implements Observable {
     }
 
     @Override
-    public void sendMessage(Command command, String message) {
+    public synchronized void sendMessage(Command command, String message) {
         String outputMessage = String.format("%s %s", command.getCommand(), message);
         try {
             outputStream.writeUTF(outputMessage);
