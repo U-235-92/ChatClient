@@ -43,6 +43,7 @@ public class ChatController implements Observer {
         setWrapListViewTextMessage();
         setUserListViewSelectActivity();
         addActionListeners();
+
     }
 
     private void setWrapListViewTextMessage() {
