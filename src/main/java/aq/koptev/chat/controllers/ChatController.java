@@ -101,6 +101,7 @@ public class ChatController implements Observer {
         });
     }
 
+
     private void writeMessage() {
         if(isEmptyMessageField()) {
             return;
