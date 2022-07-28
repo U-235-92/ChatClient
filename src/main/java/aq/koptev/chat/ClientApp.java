@@ -49,7 +49,6 @@ public class ClientApp extends Application {
         chatStage.setTitle("Чат");
         chatStage.setScene(scene);
         chatController = fxmlLoader.getController();
-        connector.registerObserver(chatController);
         chatController.setClientApp(this);
         chatController.setConnector(connector);
     }
@@ -61,12 +60,13 @@ public class ClientApp extends Application {
         settingsStage.setTitle("Настройки");
         settingsStage.setScene(scene);
         settingsController = fxmlLoader.getController();
-        connector.registerObserver(settingsController);
         settingsController.setClientApp(this);
         settingsController.setConnector(connector);
     }
 
     public void showChatView() throws IOException {
+        connector.registerObserver(chatController);
+        connector.removeObserver(authController);
         closeAuthView();
         chatStage.show();
     }

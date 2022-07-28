@@ -50,7 +50,6 @@ public class Connector implements Observable {
                         command = Command.getCommandByValue(incoming.split("\\s+", 2)[0]);
                         message = "";
                     }
-                    System.out.println(incoming);
                     notifyObservers();
                 } catch (IOException e) {
                     e.printStackTrace();
