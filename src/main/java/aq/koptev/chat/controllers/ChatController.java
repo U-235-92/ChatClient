@@ -139,36 +139,36 @@ public class ChatController implements Observer {
         switch (command) {
             case COMMON_MESSAGE_COMMAND:
             case PRIVATE_MESSAGE_COMMAND:
-                processUserMessage(message);
+                processClientMessage(message);
                 break;
-            case USER_CONNECT_COMMAND:
-            case USER_DISCONNECT_COMMAND:
-                processServerMessage(message);
+            case CLIENT_CONNECT_COMMAND:
+                processClientConnect(message);
                 break;
-            case GET_CONNECTED_USERS_COMMAND:
-                processConnectionUsers(message);
+            case CLIENT_DISCONNECT_COMMAND:
+                processClientDisconnect(message);
+            case ANSWER_CONNECTED_CLIENTS_COMMAND:
+                processConnectionClients(message);
                 break;
-            case GET_CONNECTED_USER_META_COMMAND:
-                processConnectionUser(message);
-                break;
-            case OK_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND:
-                processSuccessUserSettings(message);
-                break;
-            case ERROR_CHANGE_USER_ACCOUNT_SETTINGS_COMMAND:
-                processErrorUserSettings(message);
+            case ANSWER_CONNECTED_CLIENT_COMMAND:
+                processConnectionClient(message);
                 break;
         }
     }
 
-    private void processUserMessage(String message) {
+    private void processClientMessage(String message) {
         String sender = message.split("\\s+", 2)[0];
         String textMessage = message.split("\\s+", 2)[1];
         addMessage(String.format("%s %s", sender, textMessage));
     }
 
-    private void processServerMessage(String message) {
+    private void processClientConnect(String message) {
         addMessage(message);
-        connector.sendMessage(Command.SET_CONNECTED_USERS_COMMAND, "");/////////////////////////
+        connector.sendMessage(Command.REQUEST_CONNECTED_CLIENTS_COMMAND, "");
+    }
+
+    private void processClientDisconnect(String message) {
+        addMessage(message);
+        connector.sendMessage(Command.REQUEST_CONNECTED_CLIENTS_COMMAND, "");
     }
 
     private void addMessage(String message) {
@@ -176,7 +176,7 @@ public class ChatController implements Observer {
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
     }
 
-    private void processConnectionUsers(String message) {
+    private void processConnectionClients(String message) {
         String[] users = message.split("\\s+");
         addConnectedUsers(users);
     }
@@ -191,7 +191,7 @@ public class ChatController implements Observer {
         }
     }
 
-    private void processConnectionUser(String message) {
+    private void processConnectionClient(String message) {
         String login = "";
         String password = "";
         if(message.split("\\s+", 2).length > 1) {
@@ -201,19 +201,11 @@ public class ChatController implements Observer {
             login = message.split("\\s+", 2)[0];
         }
         setUserLogin(login);
-        connector.sendMessage(Command.USER_CONNECT_COMMAND, String.format("Пользователь %s вошел в чат", login));//////////////////////
+        connector.sendMessage(Command.NOTIFY_CLIENTS_ON_CLIENT_CONNECT_COMMAND, String.format("Пользователь %s вошел в чат", login));
     }
 
     private void setUserLogin(String login) {
         loginLabel.setText(login);
-    }
-
-    private void processSuccessUserSettings(String message) {
-
-    }
-
-    private void processErrorUserSettings(String message) {
-
     }
 
     public void setClientApp(ClientApp clientApp) {

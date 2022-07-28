@@ -3,7 +3,6 @@ package aq.koptev.chat;
 import aq.koptev.chat.controllers.AuthController;
 import aq.koptev.chat.controllers.ChatController;
 import aq.koptev.chat.controllers.SettingsController;
-import aq.koptev.chat.models.Command;
 import aq.koptev.chat.models.Connector;
 import aq.koptev.chat.models.Observable;
 import javafx.application.Application;

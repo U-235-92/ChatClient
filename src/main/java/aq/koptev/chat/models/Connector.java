@@ -13,7 +13,7 @@ import java.util.List;
 public class Connector implements Observable {
 
     private static final String DEFAULT_HOST = "localhost";
-    private static final int DEFAULT_PORT = 9000;
+    private static final int DEFAULT_PORT = 5082;
     private List<Observer> observers;
     private int port;
     private String host;
@@ -46,14 +46,11 @@ public class Connector implements Observable {
                     if(incoming.split("\\s+", 2).length > 1) {
                         command = Command.getCommandByValue(incoming.split("\\s+", 2)[0]);
                         message = incoming.split("\\s+", 2)[1];
-                    } else if(incoming.split("\\s+", 2).length == 1) {
+                    } else {
                         command = Command.getCommandByValue(incoming.split("\\s+", 2)[0]);
                         message = "";
-                    } else {
-                        command = Command.UNSUPPORTED_COMMAND;
-                        message = "";
                     }
-//                    System.out.println(command.getCommand() + " " + message);
+                    System.out.println(incoming);
                     notifyObservers();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -65,9 +62,7 @@ public class Connector implements Observable {
     }
 
     private void notifyObservers() {
-//        System.out.println("NOTIFY_OBSERVERS");
         for(Observer obs : observers) {
-//            System.out.println(command.getCommand() + " " + message);
             Platform.runLater(() -> obs.update(command, message));
         }
     }
@@ -84,9 +79,9 @@ public class Connector implements Observable {
 
     @Override
     public void sendMessage(Command command, String message) {
-        String outcoming = String.format("%s %s", command.getCommand(), message);
+        String outputMessage = String.format("%s %s", command.getCommand(), message);
         try {
-            outputStream.writeUTF(outcoming);
+            outputStream.writeUTF(outputMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

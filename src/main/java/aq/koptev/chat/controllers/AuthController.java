@@ -75,7 +75,7 @@ public class AuthController implements Observer {
             if(login.length() == 0) {
                 authMessageLabel.setText("Поле логин не может быть пустым");
             } else {
-                connector.sendMessage(Command.AUTHENTICATION_COMMAND, String.format("%s %s", login, password));
+                connector.sendMessage(Command.AUTHENTICATION_CLIENT_COMMAND, String.format("%s %s", login, password));
             }
         });
 
@@ -85,7 +85,7 @@ public class AuthController implements Observer {
             if(login.length() == 0) {
                 regMessageLabel.setText("Поле логин не может быть пустым");
             } else {
-                connector.sendMessage(Command.AUTHENTICATION_COMMAND, String.format("%s %s", login, password));
+                connector.sendMessage(Command.AUTHENTICATION_CLIENT_COMMAND, String.format("%s %s", login, password));
             }
         });
     }
@@ -93,22 +93,31 @@ public class AuthController implements Observer {
     @Override
     public synchronized void update(Command command, String message) {
         switch (command) {
-            case OK_AUTHENTICATION_COMMAND:
+            case OK_AUTHENTICATION_CLIENT_COMMAND:
                 processSuccessAuthentication(message);
                 break;
-            case ERROR_AUTHENTICATION_COMMAND:
+            case ERROR_AUTHENTICATION_CLIENT_COMMAND:
                 processErrorAuthentication(message);
                 break;
-            case OK_REGISTRATION_COMMAND:
+            case OK_REGISTRATION_CLIENT_COMMAND:
                 processSuccessRegistration(message);
                 break;
-            case ERROR_REGISTRATION_COMMAND:
+            case ERROR_REGISTRATION_CLIENT_COMMAND:
                 processErrorRegistration(message);
                 break;
         }
     }
 
     private void processSuccessAuthentication(String message) {
+        requestGetConnectedClient(message);
+        try {
+            clientApp.showChatView();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void requestGetConnectedClient(String message) {
         String login = "";
         String password = "";
         if(message.split("\\s+", 2).length > 1) {
@@ -117,14 +126,7 @@ public class AuthController implements Observer {
         } else {
             login = message.split("\\s+", 2)[0];
         }
-        connector.sendMessage(Command.SET_CONNECTED_USER_META_COMMAND, String.format("%s %s", login, password));
-//        connector.sendMessage(Command.USER_CONNECT_COMMAND, String.format("Пользователь %s вошел в чат", login));
-//        connector.sendMessage(Command.GET_CONNECTED_USERS_COMMAND, null);
-        try {
-            clientApp.showChatView();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        connector.sendMessage(Command.REQUEST_CONNECTED_CLIENT_COMMAND, String.format("%s %s", login, password));
     }
 
     private void processErrorAuthentication(String message) {
