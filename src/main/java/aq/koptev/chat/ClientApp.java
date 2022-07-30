@@ -29,6 +29,7 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
         chatStage = stage;
         connector = new Connector();
         buildAuthView();
