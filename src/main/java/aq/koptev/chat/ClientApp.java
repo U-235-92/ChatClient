@@ -22,6 +22,12 @@ public class ClientApp extends Application {
     private SettingsController settingsController;
 
     @Override
+    public void stop() throws Exception {
+        super.stop();
+        chatController.writeChatHistory();
+    }
+
+    @Override
     public void start(Stage stage) throws IOException {
         chatStage = stage;
         connector = new Connector();

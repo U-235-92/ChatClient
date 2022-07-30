@@ -71,7 +71,7 @@
                                                          <left>
                                                             <FlowPane alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="417.0" BorderPane.alignment="CENTER">
                                                                <children>
-                                                                  <Label fx:id="loginLabel" text="E">
+                                                                  <Label fx:id="loginLabel">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>

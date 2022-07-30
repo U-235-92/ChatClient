@@ -2,6 +2,7 @@ package aq.koptev.chat.controllers;
 
 import aq.koptev.chat.ClientApp;
 import aq.koptev.chat.models.Command;
+import aq.koptev.chat.models.Logger;
 import aq.koptev.chat.models.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,8 +12,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class ChatController implements Observer {
 
@@ -35,6 +39,8 @@ public class ChatController implements Observer {
     private Observable connector;
     private String selectedReceiver;
     private ClientApp clientApp;
+    private Logger logger;
+//    private boolean isReadyToWriteChatHistory = false;
 
     public ChatController() {}
 
@@ -43,7 +49,7 @@ public class ChatController implements Observer {
         setWrapListViewTextMessage();
         setUserListViewSelectActivity();
         addActionListeners();
-
+        logger = new Logger();
     }
 
     private void setWrapListViewTextMessage() {
@@ -137,6 +143,23 @@ public class ChatController implements Observer {
     }
 
     @Override
+    public void readChatHistory() {
+        File file = new File(Logger.LOG_PATH);
+        List<String> strings = logger.read(file);
+        if(strings != null) {
+            chatHistory.getItems().addAll(strings);
+        }
+    }
+
+    @Override
+    public void writeChatHistory() {
+        if(chatHistory.getItems().size() > 0) {
+            File file = new File(Logger.LOG_PATH);
+            logger.write(file, chatHistory.getItems());
+        }
+    }
+
+    @Override
     public synchronized void update(Command command, String message) {
         switch (command) {
             case COMMON_MESSAGE_COMMAND:
@@ -164,6 +187,7 @@ public class ChatController implements Observer {
     }
 
     private void processClientConnect(String message) {
+        readChatHistory();
         addMessage(message);
         connector.sendMessage(Command.REQUEST_CONNECTED_CLIENTS_COMMAND, "");
     }
@@ -172,7 +196,6 @@ public class ChatController implements Observer {
         addMessage(message);
         connector.sendMessage(Command.REQUEST_CONNECTED_CLIENTS_COMMAND, "");
     }
-
     private void addMessage(String message) {
         chatHistory.getItems().add(message);
         chatHistory.scrollTo(chatHistory.getItems().size() - 1);
